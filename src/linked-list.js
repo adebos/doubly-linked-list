@@ -191,6 +191,7 @@ class LinkedList {
 	    }
 
 	    return rezult;
+
     }
 }
 
