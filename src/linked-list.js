@@ -38,7 +38,7 @@ class LinkedList {
     	var currentAt = this._head,
         maxIndex = this.length - 1,
         count = 0,
-        message = {failure: 'Failure: non-existent node in this list.'};
+        message = {failure: 'Error: invalid value'};
 
 	    // 1-ый случай: неверная позиция
 	    if (maxIndex === -1 || index < 0 || index > maxIndex) {
@@ -59,7 +59,7 @@ class LinkedList {
         currentAt = this._head,
         maxIndex = this.length - 1,
         count = 0,
-        message = {failure: 'Failure: non-existent node in this list.'};
+        message = {failure: 'Error: invalid value'};
 
 	    // 1-ый случай: неверная позиция
 	    if (index < 0 || index > (this.length+1)) {
@@ -76,12 +76,10 @@ class LinkedList {
 	       this.append(data);
 	    // 4-ый случай: средний узел добавлен
 	    } else {
-
 	    	while (count < (index-1)) {
 	            currentAt = currentAt.next;
 	            count++;
 	        }
-
 	        node.next = currentAt.next;
 	        currentAt.next = node;
 	        node.prev = currentAt;
@@ -90,18 +88,11 @@ class LinkedList {
 	    }
 
 	    this.length++;
-
-	    //return message.success;
-
     }
 
     isEmpty() {
-    	if (this.length == 0) {
-			return true;
-		}
-		else {
-			return false;
-		}
+    	if (this.length == 0) {return true;}
+		else {return false;}
     }
 
     clear() {
@@ -115,7 +106,8 @@ class LinkedList {
     	var currentAt = this._head,
         maxIndex = this.length - 1,
         count = 0,
-        message = {failure: 'Failure: non-existent node in this list.'},
+        message = {failure: 'Error: invalid value'};
+
         beforeNodeToDelete = null,
         nodeToDelete = null,
         afterNodeToDelete = null,
@@ -163,20 +155,22 @@ class LinkedList {
     }
 
     reverse() {
-    	var newList = new LinkedList(),
-        count = 0;
+    	var currentAt = this._head,
+    	temp = null,
+    	count = 0;
 
         while (count < this.length) {
-        	newList.append(this._tail.date);
+        	temp = currentAt.next;
+	        currentAt.next = currentAt.prev;
+	        currentAt.prev = temp;
 
-        	if ((this.length-count) !== 1){
-        		this._tail = this._tail.prev;
-        		this._tail.next = null;
-        	}
-        	count++;
+	        currentAt = temp;
+	        count++;
         }
-		//this = newList;
-		//return newList;
+
+        temp = this._head;
+    	this._head = this._tail;
+    	this._tail = temp;
     }
 
     indexOf(data) {
