@@ -2,14 +2,14 @@ const Node = require('./node');
 
 class LinkedList {
 
-	//начальная установка
+	//initial setting
 	constructor() {
 		this.length = 0;
 		this._head = null;
 		this._tail = null;
 	}
 
-	//добавляет узел в список;
+	//adds a node to the list
 	append(data) {
 		var node = new Node(data);
 
@@ -27,24 +27,27 @@ class LinkedList {
 		return this;
 	}
 
-    //назначает узел в качестве головного элемента списка;
-    head() {return this._head.data;}
+    // assigns node as the head element of the list
+    head() {
+    	return this._head.data;
+    }
 
-    // назначает узел в качестве конечного элемента списка;
-    tail() {return this._tail.data;}
+    // assigns node as the final element of the list
+    tail() {
+    	return this._tail.data;
+    }
 
-    //ищет узел на n-ной позиции в списке;
+    //search node of index
     at(index) {
     	var currentAt = this._head,
         count = 0,
         message = {failure: 'Error: invalid value'};
 
-	    // 1-ый случай: неверная позиция
+	    // 1: bad position
 	    if (this.length == 0 || index < 0 || index > this.length-1) {
 	        throw new Error(message.failure);
 	    }
 
-	    // 2-ой случай: верная позиция
 	    while (count < index) {
 	        currentAt = currentAt.next;
 	        count++;
@@ -53,18 +56,19 @@ class LinkedList {
 	    return currentAt.data;
 	}
 
+	//insert node
     insertAt(index, data) {
     	var node = new Node(data),
         currentAt = this._head,
         count = 0,
         message = {failure: 'Error: invalid value'};
 
-	    // 1-ый случай: неверная позиция
+	    // 1: bad position
 	    if (index < 0 || index > (this.length+1)) {
 	        throw new Error(message.failure);
 	    }
 
-	    // 2-ой случай: первый узел добавлен
+	    // 2: first node insert
 	    if (index == 0) {
 	    	this._head = node;
 
@@ -78,10 +82,10 @@ class LinkedList {
 
 	        this.length++;
 
-	    // 3-ий случай: последний узел добавлен
+		// 3: last node insert
 	    } else if (index == this.length) {
 	       this.append(data);
-	    // 4-ый случай: средний узел добавлен
+	    // 4: middle node insert
 	    } else {
 	    	while (count < (index-1)) {
 	            currentAt = currentAt.next;
@@ -98,24 +102,22 @@ class LinkedList {
 	    return this;
     }
 
+    //empty list
     isEmpty() {
     	if (this.length == 0) {return true;}
 		else {return false;}
     }
 
+    //clear list
     clear() {
     	this.length = 0;
-
 		this._head.data = null;
 		this._tail.data = null;
-
-		this._head.next = null;//
-		this._tail.prev = null;//
 
 		return this;
     }
 
-    // удаляет узел из списка.
+    // deleted node of index
     deleteAt(index) {
     	var currentAt = this._head,
         count = 0,
@@ -126,35 +128,34 @@ class LinkedList {
         afterNodeToDelete = null,
         deletedNode = null;
 
-	    // 1-ый случай: неверная позиция
+	    // 1: bad position
 	    if (this.length === 0 || index < 0 || index > (this.length - 1)) {
 	        throw new Error(message.failure);
 	    }
 
-	    // 2-ой случай: первый узел удален
+	    // 2: first node deleted
 	    if (index === 0) {
-	        // 2-ой случай: существует второй узел
+	        // 2.1: second node found
 	        if (this._head != this._tail) {
 
 	        	this._head = currentAt.next;
-
 	            this._head.prev = null;
-
 	            this.length--;
-	        // 2-ой случай: второго узла не существует
+	        // 2.2: second node not found
 	        } else {
 	        	this.clear();
 	        }
 
-	    // 3-ий случай: последний узел удален
+	    // 3: last node deleted
 	    } else if (index === (this.length - 1)) {
+
 	    	currentAt = this._tail.prev;
 	        this._tail = this._tail.prev;
 	        this._tail.prev = currentAt.prev;
 	        this._tail.next = null;
 
 	        this.length--;
-	    // 4-ый случай: средний узел удален
+	    // 4: middle node deleted
 	    } else {
 	        while (count < index) {
 	            currentAt = currentAt.next;
@@ -173,17 +174,17 @@ class LinkedList {
 	        this.length--;
 	    }
 
-
-
 	    return this;
     }
 
+    //reverse list
     reverse() {
     	var currentAt = this._head,
     	temp = null,
     	count = 0;
 
         while (count < this.length) {
+        	//reverse .next and .prev
         	temp = currentAt.next;
 	        currentAt.next = currentAt.prev;
 	        currentAt.prev = temp;
@@ -192,39 +193,22 @@ class LinkedList {
 	        count++;
         }
 
+        //reverse _head and _tail
         temp = this._head;
     	this._head = this._tail;
-    	//this._head.prev = null;
     	this._tail = temp;
-
-
-    	/*var message = {failure: temp};
-        throw new Error(message.failure);
-
-    	temp = this._head.data;
-    	this._head.data = this._tail.data;
-    	this._tail.data = temp;
-
-    	temp = this._head.prev;
-    	this._head.prev = null;
-    	this._tail.prev = temp;
-
-    	temp = this._head.next;
-    	this._tail.next = null;
-    	this._head.next = temp;*/
-
 
     	return this;
     }
 
+    //search index of data
     indexOf(data) {
     	var currentAt = this._head,
-        maxIndex = this.length - 1,
         currentIndex = 0,
         rezult = -1;
 
-	    // поиск совпадения
-	    while (currentIndex <= maxIndex) {
+	    // search matches
+	    while (currentIndex < this.length) {
 
 	    	if (data === currentAt.data) {
 	    		rezult = currentIndex;
@@ -233,7 +217,6 @@ class LinkedList {
 	        currentAt = currentAt.next;
 	        currentIndex++;
 	    }
-
 	    return rezult;
     }
 }
