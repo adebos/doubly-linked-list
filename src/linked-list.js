@@ -24,7 +24,7 @@ class LinkedList {
 
 		this.length++;
 
-		return node;
+		return this;
 	}
 
     //назначает узел в качестве головного элемента списка;
@@ -36,12 +36,11 @@ class LinkedList {
     //ищет узел на n-ной позиции в списке;
     at(index) {
     	var currentAt = this._head,
-        maxIndex = this.length - 1,
         count = 0,
         message = {failure: 'Error: invalid value'};
 
 	    // 1-ый случай: неверная позиция
-	    if (maxIndex === -1 || index < 0 || index > maxIndex) {
+	    if (this.length == 0 || index < 0 || index > this.length-1) {
 	        throw new Error(message.failure);
 	    }
 
@@ -57,7 +56,6 @@ class LinkedList {
     insertAt(index, data) {
     	var node = new Node(data),
         currentAt = this._head,
-        maxIndex = this.length - 1,
         count = 0,
         message = {failure: 'Error: invalid value'};
 
@@ -67,12 +65,21 @@ class LinkedList {
 	    }
 
 	    // 2-ой случай: первый узел добавлен
-	    if (index === 0) {
+	    if (index == 0) {
 	    	this._head = node;
-	        this._head.next = currentAt;
-	        currentAt.prev = node;
+
+	    	if (this.length == 0){
+	    		this._tail = node;
+	    	}
+	    	else{
+		        this._head.next = currentAt;
+		        currentAt.prev = node;
+	    	}
+
+	        this.length++;
+
 	    // 3-ий случай: последний узел добавлен
-	    } else if (index === (this.length)) {
+	    } else if (index == this.length) {
 	       this.append(data);
 	    // 4-ый случай: средний узел добавлен
 	    } else {
@@ -85,9 +92,10 @@ class LinkedList {
 	        node.prev = currentAt;
 	        currentAt = node.next;
 	        currentAt.prev = node;
+	        this.length++;
 	    }
 
-	    this.length++;
+	    return this;
     }
 
     isEmpty() {
@@ -97,16 +105,21 @@ class LinkedList {
 
     clear() {
     	this.length = 0;
+
 		this._head.data = null;
 		this._tail.data = null;
+
+		this._head.next = null;//
+		this._tail.prev = null;//
+
+		return this;
     }
 
     // удаляет узел из списка.
     deleteAt(index) {
     	var currentAt = this._head,
-        maxIndex = this.length - 1,
         count = 0,
-        message = {failure: 'Error: invalid value'};
+        message = {failure: 'Error: invalid value'},
 
         beforeNodeToDelete = null,
         nodeToDelete = null,
@@ -114,26 +127,33 @@ class LinkedList {
         deletedNode = null;
 
 	    // 1-ый случай: неверная позиция
-	    if (maxIndex === -1 || index < 0 || index > maxIndex) {
+	    if (this.length === 0 || index < 0 || index > (this.length - 1)) {
 	        throw new Error(message.failure);
 	    }
 
 	    // 2-ой случай: первый узел удален
 	    if (index === 0) {
-	        this._head = currentAt.next;
-
 	        // 2-ой случай: существует второй узел
-	        if (!this._head) {
+	        if (this._head != this._tail) {
+
+	        	this._head = currentAt.next;
+
 	            this._head.prev = null;
+
+	            this.length--;
 	        // 2-ой случай: второго узла не существует
 	        } else {
-	            this._tail = null;
+	        	this.clear();
 	        }
 
 	    // 3-ий случай: последний узел удален
 	    } else if (index === (this.length - 1)) {
+	    	currentAt = this._tail.prev;
 	        this._tail = this._tail.prev;
+	        this._tail.prev = currentAt.prev;
 	        this._tail.next = null;
+
+	        this.length--;
 	    // 4-ый случай: средний узел удален
 	    } else {
 	        while (count < index) {
@@ -149,9 +169,13 @@ class LinkedList {
 	        afterNodeToDelete.prev = beforeNodeToDelete;
 	        deletedNode = nodeToDelete;
 	        nodeToDelete = null;
+
+	        this.length--;
 	    }
 
-	    this.length--;
+
+
+	    return this;
     }
 
     reverse() {
@@ -170,7 +194,27 @@ class LinkedList {
 
         temp = this._head;
     	this._head = this._tail;
+    	//this._head.prev = null;
     	this._tail = temp;
+
+
+    	/*var message = {failure: temp};
+        throw new Error(message.failure);
+
+    	temp = this._head.data;
+    	this._head.data = this._tail.data;
+    	this._tail.data = temp;
+
+    	temp = this._head.prev;
+    	this._head.prev = null;
+    	this._tail.prev = temp;
+
+    	temp = this._head.next;
+    	this._tail.next = null;
+    	this._head.next = temp;*/
+
+
+    	return this;
     }
 
     indexOf(data) {
@@ -191,7 +235,6 @@ class LinkedList {
 	    }
 
 	    return rezult;
-
     }
 }
 
